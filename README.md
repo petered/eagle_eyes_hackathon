@@ -14,14 +14,22 @@ find them.  Scroll to the bottom of this Readme to find the location.
 
 ## Format
 
-When the clock stops, you'll submit a Google Colab notebook.  Your notebook will contain 
+When the clock stops, you'll submit a Google Colab notebook.  The notebook will contain 
+a MyModelLoader() class that we will run as follows.  
+
+```commandline
+    model = MyModelLoader().load_detector()
+    evaluate_models_on_dataset(
+        detectors={model.get_name(): model},
+        data_loader=AnnotatedImageDataLoader.from_folder(SECRET_TEST_SET_FOLDER)
+    )
+```
+
+To see how to implement this class, follow the steps below and then start from one of the
+example templates.
 
 
-
-
-
-
-## Getting set up locally 
+## Set up
 
 You'll probably want to get set up locally on your computer.  Here's how to do that.
 
@@ -49,15 +57,16 @@ pip install -r requirements.txt
 
 
 4) Download the training dataset.
-   1. Manually you can download the dataset from (TODO: Add link), 
+   1. **Manually**. You can download the dataset from [here](https://drive.google.com/file/d/1owtQv3m4CmWEpkiyZlf4TS_zRymkiAQI/view?usp=sharing), 
       and unzip it to `~/Downloads/eagle_eyes_dataset`
+
+We will also have the dataset available on a thumb drive at the hackathon since it will be big (10ish GB)
 
 
 5) Get into it!
    1) Check out the submission templates in `hackathon/submissions`.  
    There you'll find a sample submission and 2 templates to get you started.
    2) Check out some scripts showing you how to compare and debug detectors  `hackathon/scripts`
-
 
 
 6) Submission  
