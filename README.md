@@ -37,16 +37,19 @@ You'll probably want to get set up locally on your computer.  Here's how to do t
 
 ```
 git clone git@github.com:petered/eagle_eyes_hackathon.git
+cd eagle_eyes_hackathon
 ```
 
-2) **Create a virtual environment.**  You can do this by running the following command in your terminal:
+2) **(Recommended) Create a virtual environment.**  You can do this by running the following command in your terminal:
    1) With venv:
    ```
    python3 -m venv eagle_eyes_hackathon
-    ```
+   source eagle_eyes_hackathon/bin/activate
+   ```
    2) With Conda:
    ```
     conda create -n eagle_eyes_hackathon python=3.10
+    conda activate eagle_eyes_hackathon
     ```
 
 
@@ -86,10 +89,6 @@ We will evaluate your code by copying your notebook and adding a cell like this:
         data_loader=AnnotatedImageDataLoader.from_folder(SECRET_TEST_SET_FOLDER)
     )
 ```
-
-
-
-
 
 
 ## The Answer
