@@ -9,7 +9,7 @@ import hackathon
 from hackathon.model_utils.tf_model_utils import TFPrebuiltModel
 
 
-ASSET_DIR = os.path.join(os.path.abspath(hackathon.__file__ ), 'assets')
+ASSET_DIR = os.path.abspath(os.path.join(hackathon.__file__, '..', '..', 'assets'))
 
 
 def load_v0_model():
@@ -26,7 +26,7 @@ def load_v1_model():
     V1 does the same as V0 but with an initial pre-processing step of doing center-surround
     filtering on the image.
     """
-    return TFPrebuiltModel.from_model_file(os.path.join(ASSET_DIR, 'V1.eagle'))
+    return TFPrebuiltModel.from_model_file(os.path.join(ASSET_DIR, 'V1.ColorAlone.eagle'))
 
 
 def load_v2p5_model():
@@ -34,4 +34,4 @@ def load_v2p5_model():
     V2.5 does what v1 does, but with some Kernel Density Estimation to postprocsess
     the local maxima.
     """
-    return TFPrebuiltModel.from_model_file(os.path.join(ASSET_DIR, 'V2p5.eagle'))
+    return TFPrebuiltModel.from_model_file(os.path.join(ASSET_DIR, 'V2.5.Photo.Fast.eagle'))

@@ -1,20 +1,25 @@
 
-
-
-
 """
-Eagle Eyes Hackathon Template file
+Eagle Eyes Hackathon Template file.
 
-In the end, you only need to produce two things:
--
+This template serves as an example of how you might have a trainiable model.
+
+We will test your model loader with the following code:
+
+    model = MyModelLoader().load_detector()
+    evaluate_models_on_dataset(
+        detectors={model.get_name(): model},
+        data_loader=AnnotatedImageDataLoader.from_folder().get_mini_version()
+    )
+
+So if you pass test_submission.py you should be good to go.
 """
-from typing import Sequence, Optional, Iterator
-
-import numpy as np
 from dataclasses import dataclass
-
-from hackathon.data_utils.data_loading import AnnotatedImageDataLoader, BGRImageArray, DEFAULT_DATASET_FOLDER
+from typing import Sequence, Optional, Iterator
+from hackathon.data_utils.data_loading import AnnotatedImageDataLoader, BGRImageArray
 from hackathon.model_utils.interfaces import IDetectionModel, IDetectorLoader, Detection
+from hackathon.model_utils.prebuilt_models import load_v2p5_model
+from hackathon.model_utils.scoring_utils import evaluate_models_on_dataset
 
 
 class MyModel(IDetectionModel):
@@ -25,12 +30,17 @@ class MyModel(IDetectionModel):
 
     def detect(self, image: BGRImageArray) -> Sequence[Detection]:
         """ Detect objects in an image.  Return a list of detections in this frame."""
-        raise NotImplementedError()
+        raise NotImplementedError(f"TODO: Implement detection for {self.get_name()}")
 
 
 @dataclass
 class MyModelLoader(IDetectorLoader):
-
+    """
+    This is the class that we will use to load your model.
+    If your model is something that must be loaded from a file (e.g. if it uses parameters
+    that are learned from data), you can handle the loading in the load_detector method.
+    Otherwise, you can just return an instance of your model.
+    """
     path: Optional[str] = None
 
     def load_detector(self) -> MyModel:
@@ -39,31 +49,13 @@ class MyModelLoader(IDetectorLoader):
         return MyModel()
 
 
-
-@dataclass
-class MyModelTrainer:
-    n_epochs: int
-
-    def iter_train_and_save_model(self, loader: AnnotatedImageDataLoader) -> Iterator[str]:
-        """ Train the model, periodically yielding """
-        for e in range(self.n_epochs):
-            frame: AnnotatedFrame = loader.load(np.random.randint(len(loader)))
-            raise NotImplementedError('TODO: Fill in training code here.')
-            path = f"my_model_epoch_{e}.pth"
-            yield path
-
-
-def evaluate_model_on_dataset():
-
-    # Train
-    loader = AnnotatedImageDataLoader.from_folder(DEFAULT_DATASET_FOLDER)
-    trainer = MyModelTrainer(n_epochs=5)
-    for i, save_path in enumerate(trainer.iter_train_and_save_model(loader)):
-        print(f"Saved model to {save_path}")
-
-        # Evaluate
-        evaluate_model_on_dataset()
+def main():
+    model = MyModelLoader().load_detector()
+    evaluate_models_on_dataset(
+        detectors={model.get_name(): model},
+        data_loader=AnnotatedImageDataLoader.from_folder().get_mini_version()
+    )
 
 
 if __name__ == '__main__':
-    evaluate_model_on_dataset()
+    main()

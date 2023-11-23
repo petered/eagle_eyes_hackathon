@@ -15,6 +15,7 @@ from PIL import ImageTk
 from artemis.fileman.smart_io import smart_load_image
 from artemis.general.custom_types import BGRImageArray, BGRColorTuple
 from artemis.image_processing.image_utils import ImageViewInfo, BGRColors
+from hackathon.ui_utils.tk_utils.machine_utils import is_windows_machine
 from hackathon.ui_utils.tk_utils.tk_error_dialog import tk_show_eagle_eyes_error_dialog, ErrorDetail
 from hackathon.ui_utils.tk_utils.tk_utils import bind_callbacks_to_widget
 from hackathon.ui_utils.tk_utils.ui_utils import bgr_image_to_pil_image
@@ -142,7 +143,7 @@ class ZoomableImageFrame(tk.Label):
 
     def _on_mouse_drag_and_release(self, event: Event):
 
-        if self._mouse_callback is not None:
+        if self._mouse_callback is not None and self._image_view_frame is not None:
             display_xy = self._event_to_display_xy(event)
             px, py = self._image_view_frame.display_xy_to_pixel_xy(display_xy)
             eat_event = self._mouse_callback(event, (int(px), int(py)))

@@ -65,7 +65,7 @@ def get_auc_result_tables(
     }
 
     # This is roughtly the precision when we consider each detection (over the entire video) as a separate prediction
-    model_to_n_correct_predictions_per_detection = {model_name: result.get_n_correct_predictions(threshold=threshold)/(model_name_to_n_superthreshold_detections[model_name] or np.NaN)
+    model_to_n_correct_predictions_per_detection = {model_name: result.get_n_true_positives(threshold=threshold) / (model_name_to_n_superthreshold_detections[model_name] or np.NaN)
                                                     for model_name, result in model_to_box_pred_result.items()}
 
     def get_pr_string(result: PredictionResult) -> str:
@@ -75,7 +75,7 @@ def get_auc_result_tables(
     raw_pr_dataframe = pd.DataFrame({vidname: {modelname: get_pr_string(v) for modelname, v in vidresults.items()}
                                   for vidname, vidresults in vid_to_model_to_box_pred_result.items()}).T
 
-    n_predictions_correct_total_dataframe = pd.DataFrame({f"{vidname} ({model_to_result[first(model_names)].n_ground_truths})": {model_name: f"{video_model_to_n_superthreshold_detections[vidname][model_name]}/{model_to_result[model_name].get_n_correct_predictions(threshold=threshold)}" for model_name in model_names}
+    n_predictions_correct_total_dataframe = pd.DataFrame({f"{vidname} ({model_to_result[first(model_names)].n_ground_truths})": {model_name: f"{video_model_to_n_superthreshold_detections[vidname][model_name]}/{model_to_result[model_name].get_n_true_positives(threshold=threshold)}" for model_name in model_names}
                                                                     for vidname, model_to_result in vid_to_model_to_box_pred_result.items()}).T
 
     raw_auc_dataframe = pd.DataFrame({vidname: {modelname: v.get_pr_auc() for modelname, v in vidresults.items()}

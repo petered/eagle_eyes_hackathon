@@ -9,7 +9,7 @@ from artemis.image_processing.image_utils import BoundingBox, BGRColors
 from artemis.plotting.data_conversion import put_list_of_images_in_array, put_data_in_grid, put_data_in_image_grid
 from hackathon.data_utils.data_loading import AnnotatedImageDataLoader, BGRImageArray, AnnotatedImage
 from hackathon.model_utils.interfaces import Detection
-from hackathon.model_utils.scoring_utils import PerFrameResult, DetectorScoringResult
+from hackathon.model_utils.scoring_utils import FrameDetectionResult, DatasetDetectionResult
 
 
 def just_show(image: BGRImageArray, title: Optional[str] = None, hang_time: Optional[float] = None) -> BGRImageArray:
@@ -36,7 +36,7 @@ def render_detections_unto_image(
 
 
 def render_per_frame_result(
-        per_frame_result: PerFrameResult,
+        per_frame_result: FrameDetectionResult,
         data_loader: AnnotatedImageDataLoader,
 ) -> BGRImageArray:
     """ Iterate over images showing the results of a detector on a dataset.  """

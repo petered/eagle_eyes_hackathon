@@ -51,10 +51,10 @@ def tensor_box_detection_dict_to_detections(tensor_box_detections: BoxInfoDict, 
     scores = tensor_box_detections['scores'].numpy()
     labels = tensor_box_detections['labels'].numpy() if 'labels' in tensor_box_detections else np.array([b''] * len(box_ids))
     return [Detection(
-        ijhw_box=ijhw_boxes[i],
+        ijhw_box=tuple(ijhw_boxes[i]),
         score=scores[i],
         label=labels[i].decode('ascii')
-    ) for i in range(len(ijhw_boxes))]
+    ) for i in range(len(ijhw_boxes)) if box_ids[i] != -1]
 
 
 def load_signatures_from_standard_model(
