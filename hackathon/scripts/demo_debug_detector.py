@@ -1,8 +1,6 @@
 from hackathon.data_utils.data_loading import AnnotatedImage, AnnotatedImageDataLoader
 from hackathon.model_utils.interfaces import IDetectionModel
 from hackathon.submissions.sample_submission.submission import MyModel
-from hackathon.ui_utils.tk_utils.tkshow import tkshow
-from hackathon.ui_utils.visualization_utils import just_show, render_detections_unto_image
 
 
 def demo_debug_detector():

@@ -3,20 +3,14 @@ import json
 import os
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Tuple, Sequence, Optional, TypedDict, Dict, List, Iterator, Generic, TypeVar, Callable
+from typing import Tuple, Optional, TypedDict, Dict, List, Iterator, Callable
 
 import cv2
-import numpy as np
 
+from artemis.general.custom_types import BGRImageArray
 from artemis.image_processing.image_builder import ImageBuilder
 from artemis.image_processing.image_utils import BoundingBox, BGRColors
 from dataclasses_serialization.json import JSONSerializer
-
-BGRImageArray = np.ndarray
-
-
-from artemis.general.custom_types import BGRImageArray
-
 
 DEFAULT_DATASET_FOLDER = os.path.expanduser(os.path.join('~', 'Downloads', 'eagle_eyes_dataset'))
 
@@ -112,6 +106,8 @@ class AnnotatedImageDataLoader:
     @classmethod
     def from_folder(cls, root_folder: str = DEFAULT_DATASET_FOLDER):
         root_folder = os.path.expanduser(root_folder)
+        if not os.path.exists(root_folder):
+            raise FileNotFoundError(f"Dataset Folder {root_folder} does not exist.  You'll need to download and extract the dataset first.")
         dataset_path = cls._dataset_path(root_folder)
         if os.path.exists(dataset_path):
             with open(dataset_path, 'r') as json_file:

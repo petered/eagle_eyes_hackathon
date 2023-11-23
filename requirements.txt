@@ -1,0 +1,5 @@
+numpy
+opencv-python
+git+https://github.com/petered/artemis.git@develop#egg=artemis-ml
+git+https://github.com/petered/pandastable.git#egg=pandastable
+git+https://github.com/petered/python-dataclasses-serialization.git@add_setup#egg=dataclass-serialization

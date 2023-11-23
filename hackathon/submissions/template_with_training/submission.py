@@ -10,7 +10,7 @@ We will test your model loader with the following code:
     model = MyModelLoader().load_detector()
     evaluate_models_on_dataset(
         detectors={model.get_name(): model},
-        data_loader=AnnotatedImageDataLoader.from_folder().get_mini_version()
+        data_loader=AnnotatedImageDataLoader.from_folder(SECRET_TEST_DATASET_FOLDER)
     )
 
 So if you pass test_submission.py you should be good to go.

@@ -7,7 +7,7 @@ setup(
     install_requires=[
         'numpy',  # assuming numpy is a dependency
         'opencv-python',  # assuming opencv-python is a dependency
-        'artemis-ml @ git+https://github.com/petered/artemis.git@migrating_stuff_in',
+        'artemis-ml @ git+https://github.com/petered/artemis.git@develop',
         # 'pandastable @ git+https://github.com/petered/pandastable.git',
         'dataclass-serialization @ git+https://github.com/petered/python-dataclasses-serialization.git@add_setup'
     ],

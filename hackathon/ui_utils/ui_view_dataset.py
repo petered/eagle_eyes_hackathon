@@ -324,6 +324,8 @@ class FrameDatabaseViewer(tk.Frame):
 
 def open_annotation_database_viewer(data_loader: Optional[AnnotatedImageDataLoader] = None, results: Optional[DatasetDetectionResult] = None):
 
+    assert os.path.exists(DEFAULT_DATASET_FOLDER), f"Dataset folder {DEFAULT_DATASET_FOLDER} does not exist."
+
     if data_loader is None:
         data_loader = AnnotatedImageDataLoader.from_folder(DEFAULT_DATASET_FOLDER)
 
