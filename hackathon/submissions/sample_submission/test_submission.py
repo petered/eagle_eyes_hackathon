@@ -1,7 +1,7 @@
 from hackathon.data_utils.data_loading import AnnotatedImageDataLoader
 from hackathon.model_utils.scoring_utils import evaluate_models_on_dataset
 from hackathon.ui_utils.visualization_utils import render_detections_unto_image
-from submission import MyModelLoader
+from hackathon.submissions.sample_submission.submission import MyModelLoader
 import cv2
 
 
