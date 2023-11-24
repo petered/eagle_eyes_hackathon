@@ -100,36 +100,36 @@ def get_auc_result_tables(
     # ) for modelname in all_model_names}
 
     summary_dataframe = pd.DataFrame(columns=raw_auc_dataframe.columns)
-    # summary_dataframe = summary_dataframe.append(pd.Series(raw_dataframe.mean(axis=0), name='score mean'))
+    # summary_dataframe = pd.concat([pd.Series(raw_dataframe.mean(axis=0), name='score mean')])
 
-    # summary_dataframe = summary_dataframe.append(pd.Series(raw_dataframe.std(axis=0), name='score STD'))
-    summary_dataframe = summary_dataframe.append(pd.Series(raw_auc_dataframe.rank(axis=1, ascending=False).mean(axis=0), name='rank mean'))
+    # summary_dataframe = pd.concat([pd.Series(raw_dataframe.std(axis=0), name='score STD')])
+    summary_dataframe = pd.concat([pd.Series(raw_auc_dataframe.rank(axis=1, ascending=False).mean(axis=0), name='rank mean')])
 
     mean_auc = pd.Series({model_name: np.nanmean([m2r[model_name].get_pr_auc() for m2r in vid_to_model_to_box_pred_result.values()]) for model_name in model_names}, name='mean AUC')
-    summary_dataframe = summary_dataframe.append(mean_auc)
+    summary_dataframe = pd.concat([mean_auc])
     model_name_to_auc_score = {model_name: result.get_pr_auc() for model_name, result in model_to_box_pred_result.items()}
     overall_auc = pd.Series(model_name_to_auc_score, name='overall AUC')
-    summary_dataframe = summary_dataframe.append(overall_auc)
-    summary_dataframe = summary_dataframe.append(pd.Series(overall_auc.rank(ascending=False), name='AUC-rank'))
+    summary_dataframe = pd.concat([overall_auc])
+    summary_dataframe = pd.concat([pd.Series(overall_auc.rank(ascending=False), name='AUC-rank')])
 
     # Add overall precision and recall
     model_name_to_precision_recall = {model_name: result.get_precision_recall_at_threshold(threshold) for model_name, result in model_to_box_pred_result.items()}
-    summary_dataframe = summary_dataframe.append(pd.Series({name: p for name, (p, r) in model_name_to_precision_recall.items()}, name='Precision'))
-    summary_dataframe = summary_dataframe.append(pd.Series({name: r for name, (p, r) in model_name_to_precision_recall.items()}, name='Recall'))
-    summary_dataframe = summary_dataframe.append(pd.Series({name: 2*(p * r)/(p+r) for name, (p, r) in model_name_to_precision_recall.items()}, name='F1'))
+    summary_dataframe = pd.concat([pd.Series({name: p for name, (p, r) in model_name_to_precision_recall.items()}, name='Precision')])
+    summary_dataframe = pd.concat([pd.Series({name: r for name, (p, r) in model_name_to_precision_recall.items()}, name='Recall')])
+    summary_dataframe = pd.concat([pd.Series({name: 2*(p * r)/(p+r) for name, (p, r) in model_name_to_precision_recall.items()}, name='F1')])
 
     # Add number of super-threshold detections (by unique ID).  This roughtly tells us how many unique things the model reports
-    summary_dataframe = summary_dataframe.append(pd.Series({model_name: model_name_to_n_superthreshold_detections[model_name] for model_name in model_names}, name='N detections'))
-    summary_dataframe = summary_dataframe.append(pd.Series({model_name: model_to_n_correct_predictions_per_detection[model_name] for model_name in model_names}, name='Video-Precision'))
+    summary_dataframe = pd.concat([pd.Series({model_name: model_name_to_n_superthreshold_detections[model_name] for model_name in model_names}, name='N detections')])
+    summary_dataframe = pd.concat([pd.Series({model_name: model_to_n_correct_predictions_per_detection[model_name] for model_name in model_names}, name='Video-Precision')])
 
     # Ok, video-f1 roughly corresponds to what we want in the end
-    summary_dataframe = summary_dataframe.append(pd.Series({model_name: 2*(p * model_to_n_correct_predictions_per_detection[model_name])/(p+model_to_n_correct_predictions_per_detection[model_name])
-                                                            for model_name, (p, _) in model_name_to_precision_recall.items()}, name='Video-F1'))
+    summary_dataframe = pd.concat([pd.Series({model_name: 2*(p * model_to_n_correct_predictions_per_detection[model_name])/(p+model_to_n_correct_predictions_per_detection[model_name])
+                                                            for model_name, (p, _) in model_name_to_precision_recall.items()}, name='Video-F1')])
 
-    # summary_dataframe = summary_dataframe.append(pd.Series(raw_dataframe.rank(axis=1, ascending=False).std(axis=0), name='  rank STD'))
-    # summary_dataframe = summary_dataframe.append(
+    # summary_dataframe = pd.concat([pd.Series(raw_dataframe.rank(axis=1, ascending=False).std(axis=0), name='  rank STD')])
+    # summary_dataframe = pd.concat([
     #     pd.Series({modelname: 1000 * np.median([modelname_to_results[modelname].median_cycle_time for vidname, modelname_to_results in vid_to_model_to_box_pred_result.items()])
-    #                for modelname in raw_auc_dataframe.columns}, name='median cycle ms'))
+    #                for modelname in raw_auc_dataframe.columns}, name='median cycle ms')])
 
     if debug:
         winning_model = summary_dataframe.loc['overall AUC'].idxmax()
