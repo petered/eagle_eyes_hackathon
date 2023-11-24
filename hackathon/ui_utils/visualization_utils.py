@@ -20,16 +20,16 @@ def just_show(image: BGRImageArray, title: Optional[str] = None, hang_time: Opti
 
 
 def render_detections_unto_image(
-        annotated_image: AnnotatedImage,
+        image: BGRImageArray,
         detections: Sequence[Detection],
         title: Optional[str] = None,
+        make_copy: bool = True,  # False if you are sure you are not going to use the original image again
 ) -> BGRImageArray:
     """ Draw detections onto an image.  """
-
-    base_image = annotated_image.render()
+    base_image = image.copy() if make_copy else image
     builder = ImageBuilder.from_image(base_image, copy=False)
     for d in detections:
-        builder.draw_box(BoundingBox.from_ijhw(*d.ijhw_box, score=d.score), colour=annotated_image.image[tuple(d.ijhw_box[:2])], secondary_colour=BGRColors.WHITE, thickness=3, as_circle=True)
+        builder.draw_box(BoundingBox.from_ijhw(*d.ijhw_box, score=d.score), colour=base_image[tuple(d.ijhw_box[:2])], secondary_colour=BGRColors.WHITE, thickness=3, as_circle=True)
     if title is not None:
         builder.draw_corner_text(title, colour=BGRColors.WHITE, shadow_color=BGRColors.BLACK, thickness=2)
     return builder.get_image()
@@ -48,7 +48,7 @@ def render_per_frame_result(
 
     per_detector_images = [
         render_detections_unto_image(
-            annotated_image=replace(annotated_image_info, image=base_image.copy()),
+            image=replace(annotated_image_info, image=base_image.copy()).render(),
             detections=detections,
             title=detector_name
         ) for detector_name, detections in per_frame_result.detections.items()]

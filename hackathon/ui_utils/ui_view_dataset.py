@@ -5,14 +5,16 @@ from math import ceil
 from tkinter.ttk import Treeview
 from typing import Tuple, Optional, Sequence
 
+from more_itertools import first
+
 from artemis.image_processing.image_utils import ImageViewInfo
-from hackathon.data_utils.data_loading import AnnotatedImageDataLoader, DEFAULT_DATASET_FOLDER, AnnotatedImageSource, AnnotatedImage, Annotation
+from hackathon.data_utils.data_loading import AnnotatedImageDataLoader, AnnotatedImageSource, AnnotatedImage, Annotation, get_default_dataset_folder
 from hackathon.model_utils.interfaces import Detection
 from hackathon.model_utils.scoring_utils import DatasetDetectionResult
 from hackathon.ui_utils.tk_utils.alternate_zoomable_image_view import ZoomableImageFrame
 from hackathon.ui_utils.tk_utils.tk_utils import hold_tkinter_root_context
 from hackathon.ui_utils.tk_utils.ui_choose_parameters import ui_choose_parameters
-from hackathon.ui_utils.tk_utils.ui_utils import populate_frame, get_awaiting_input_image, RespectableButton
+from hackathon.ui_utils.tk_utils.ui_utils import populate_frame, get_awaiting_input_image, RespectableButton, ToggleLabel
 from hackathon.ui_utils.visualization_utils import render_detections_unto_image
 
 
@@ -24,24 +26,15 @@ class FrameAnnotationView(tk.Frame):
                  ):
         super().__init__(master)
 
-        # Make this frame have a column layout with 2 columns, the right one being 3x wider than the left one
-        # self.grid_columnconfigure(0, weight=1)
-        # self.grid_columnconfigure(1, weight=3)
-        # self.grid_rowconfigure(0, weight=1)
+        top_panel = tk.Frame(self)
+        top_panel.pack(side=tk.TOP, fill=tk.X, expand=False)
+        self._label = tk.Label(top_panel, text="")
+        self._label.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        self._show_annotations_toggle = ToggleLabel(top_panel, on_text="Hide Annotations", off_text="Show Annotations",
+                                                    initial_state=True, state_switch_callback=lambda state: self.redraw(),
+                                                    call_switch_callback_immidiately=False, shortcut="h")
+        self._show_annotations_toggle.pack(side=tk.LEFT, fill=tk.X, expand=False)
 
-        # with populate_frame(tk.Frame(self)) as self._left_panel:
-        #     self._left_panel.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        #     # self._left_panel.grid(column=0, row=0, sticky=tk.NSEW)
-        #     # self._left_panel.pack_propagate(False)
-        #     self._annotation_table = Table(self._left_panel)
-        #     # self._annotation_table.show()
-        #     self._annotation_table.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
-        # with populate_frame(tk.Frame(self)) as self._right_panel:
-        #     self._right_panel.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-            # self._right_panel.grid(column=1, row=0, sticky=tk.NSEW)
-        self._label = tk.Label(self, text="")
-        self._label.pack(side=tk.TOP, fill=tk.X, expand=False)
         self._image_view = ZoomableImageFrame(
             self,
             # single_click_callback=self._on_click,
@@ -167,10 +160,14 @@ class FrameAnnotationView(tk.Frame):
                 instructions = "Click and drag to add a new annotation, delete to remove the last one."
             else:
                 instructions = "Command-E to enable annotation editing."
-            if self._current_frame_detections is None:
+
+            if self._show_annotations_toggle.get_toggle_state():
                 display_image = frame_annotation.render(thickness=ceil(2/frame_view.zoom_level) if (frame_view:=self._image_view.get_image_view_frame_or_none()) else 1)
             else:
-                display_image = render_detections_unto_image(annotated_image=frame_annotation, detections=self._current_frame_detections)
+                display_image = frame_annotation.image
+
+            if self._current_frame_detections is not None:
+                display_image = render_detections_unto_image(image=display_image, detections=self._current_frame_detections)
 
             self._label.config(text=f"{len(frame_annotation.annotations) if frame_annotation.annotations is not None else 'No'} annotations.    {instructions}\nWASD/ZXC to pan/zoom")
 
@@ -259,7 +256,7 @@ class FrameDatabaseViewer(tk.Frame):
         self.after(1, self._update_tree_view_with_annotations)
         self._data_loader = data_loader
         self._dataset_detection_result: Optional[DatasetDetectionResult] = dataset_detection_result
-        self._current_detector: Optional[str] = None
+        self._current_detector: Optional[str] = first(self._dataset_detection_result.per_frame_results[0].detections.keys()) if self._dataset_detection_result is not None else None
 
     def set_data_loader(self, data_loader: AnnotatedImageDataLoader):
         self._data_loader = data_loader
@@ -324,10 +321,8 @@ class FrameDatabaseViewer(tk.Frame):
 
 def open_annotation_database_viewer(data_loader: Optional[AnnotatedImageDataLoader] = None, results: Optional[DatasetDetectionResult] = None):
 
-    assert os.path.exists(DEFAULT_DATASET_FOLDER), f"Dataset folder {DEFAULT_DATASET_FOLDER} does not exist."
-
     if data_loader is None:
-        data_loader = AnnotatedImageDataLoader.from_folder(DEFAULT_DATASET_FOLDER)
+        data_loader = AnnotatedImageDataLoader.from_folder(get_default_dataset_folder())
 
     with hold_tkinter_root_context() as root:
 

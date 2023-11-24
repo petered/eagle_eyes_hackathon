@@ -1,9 +1,10 @@
 import dataclasses
 import json
 import os
+import shutil
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Tuple, Optional, TypedDict, Dict, List, Iterator, Callable
+from typing import Tuple, Optional, TypedDict, Dict, List, Iterator, Callable, Sequence
 
 import cv2
 
@@ -11,8 +12,19 @@ from artemis.general.custom_types import BGRImageArray
 from artemis.image_processing.image_builder import ImageBuilder
 from artemis.image_processing.image_utils import BoundingBox, BGRColors
 from dataclasses_serialization.json import JSONSerializer
+from eagle_eyes.demos.demo_profile_tflite_model import hold_tempdir
+from video_scanner.app_utils.utils import make_backup_file_copy
 
-DEFAULT_DATASET_FOLDER = os.path.expanduser(os.path.join('~', 'Downloads', 'eagle_eyes_dataset'))
+DEFAULT_DATASET_FOLDER = os.path.expanduser(os.path.join('~', 'Downloads', 'eagle_eyes_hackathon_dataset'))
+
+
+def get_default_dataset_folder() -> str:
+    return DEFAULT_DATASET_FOLDER
+
+
+def set_default_dataset_folder(folder: str):
+    global DEFAULT_DATASET_FOLDER
+    DEFAULT_DATASET_FOLDER = folder
 
 
 @dataclass
@@ -104,10 +116,14 @@ class AnnotatedImageDataLoader:
         return self.filter(lambda case_name: case_name in cases)
 
     @classmethod
-    def from_folder(cls, root_folder: str = DEFAULT_DATASET_FOLDER):
+    def from_folder(cls, root_folder: Optional[str] = None, create_if_not_exists: bool = False) -> 'AnnotatedImageDataLoader':
+        root_folder = root_folder or get_default_dataset_folder()
         root_folder = os.path.expanduser(root_folder)
         if not os.path.exists(root_folder):
-            raise FileNotFoundError(f"Dataset Folder {root_folder} does not exist.  You'll need to download and extract the dataset first.")
+            if create_if_not_exists:
+                os.makedirs(root_folder)
+            else:
+                raise FileNotFoundError(f"Dataset Folder {root_folder} does not exist.  You'll need to download and extract the dataset first.")
         dataset_path = cls._dataset_path(root_folder)
         if os.path.exists(dataset_path):
             with open(dataset_path, 'r') as json_file:
@@ -116,6 +132,38 @@ class AnnotatedImageDataLoader:
             json_data = {}
         cases = JSONSerializer.deserialize(Dict[str, Case], json_data)
         return cls(root_folder=root_folder, case_dict=cases)
+
+    @classmethod
+    def from_merged_datasets(cls, root_folder: str, datasets: Sequence['AnnotatedImageDataLoader']) -> 'AnnotatedImageDataLoader':
+        """ Merge multiple datasets together """
+
+        with hold_tempdir() as tempdir:
+            builder = AnnotatedImageDatasetBuilder.from_folder(root_folder=tempdir)
+            case_dict = {}
+
+            for dataset in datasets:
+                for case_name, index, annotated_image_src in dataset.iter_case_index_annotated_image_sources():
+                    annotated_image = dataset.lookup_annotated_image(case_name, index)
+                    builder.add_annotations(
+                        case=case_name,
+                        annotated_image=annotated_image,
+                        source_identifier=annotated_image_src.original_source_identifier,
+                    )
+                    print(f"Added {len(annotated_image.annotations)} annotations for {case_name}")
+            builder.save()
+
+            # Move all contents of tempdir to root_folder
+            if os.path.exists(root_folder):
+                make_backup_file_copy(root_folder)
+                shutil.rmtree(root_folder, ignore_errors=True)
+            shutil.move(tempdir, root_folder)
+
+
+
+        # Now merge both /images subfolders
+
+        return cls(root_folder=root_folder, case_dict=case_dict)
+
 
     @cached_property
     def index_to_case_and_item(self):

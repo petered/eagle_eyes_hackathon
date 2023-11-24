@@ -1,7 +1,8 @@
-from hackathon.data_utils.data_loading import DEFAULT_DATASET_FOLDER
 import os
 import urllib
 import zipfile
+
+from hackathon.data_utils.data_loading import DEFAULT_DATASET_FOLDER
 
 
 def download_dataset(dataset_zip_file_url: str, local_folder_path: str = DEFAULT_DATASET_FOLDER):

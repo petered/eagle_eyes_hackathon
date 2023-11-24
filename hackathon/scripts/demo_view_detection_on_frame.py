@@ -14,7 +14,7 @@ def demo_show_model_results_on_case():
     example_annotated_image: AnnotatedImage = AnnotatedImageDataLoader.from_folder()\
         .lookup_annotated_image(case_name='WALK_DAY_ROCK', item_ix=2)
     detections = model.detect(example_annotated_image.image)
-    display_image = render_detections_unto_image(example_annotated_image, detections, title=model.get_name())
+    display_image = render_detections_unto_image(example_annotated_image.render(), detections, title=model.get_name())
     print(f"Showing detections for {model.get_name()}.  Z/X/C to zoom, WASD to pan, Esc to quit.")
     tkshow(display_image)
 

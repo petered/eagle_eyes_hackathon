@@ -10,7 +10,7 @@ def demo_view_annotated_image():
     """
     data_loader = AnnotatedImageDataLoader.from_folder()
     annotated_image = data_loader[5]
-    tkshow({'raw': annotated_image.image, 'annotated': annotated_image.render()})
+    tkshow({'annotated': annotated_image.render(), 'raw': annotated_image.image})
 
 
 if __name__ == '__main__':
