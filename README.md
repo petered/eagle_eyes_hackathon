@@ -78,7 +78,7 @@ We will also have the dataset available on a thumb drive at the hackathon since 
 - Can't import hackathon?  Try adding hackathon dir to your python path
 
 ```
-cd path/to/eagle_eyes_hackathon
+cd path/to/eagle_eyes_hackathon  # Change path to wherever you cloned it
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
 
