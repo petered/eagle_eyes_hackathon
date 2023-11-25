@@ -60,7 +60,7 @@ pip install -r requirements.txt
 
 
 4) Download the training dataset.
-   1. **Manually**. You can download the dataset from [here](https://drive.google.com/file/d/1owtQv3m4CmWEpkiyZlf4TS_zRymkiAQI/view?usp=sharing), 
+   1. **Manually**. You can download the dataset from [here](https://drive.google.com/drive/folders/1KgSVcL3eH49Xh0MdpInIJJwKJ6Bn9yQE?usp=sharing), 
       and unzip it to `~/Downloads/eagle_eyes_dataset`
 
 We will also have the dataset available on a thumb drive at the hackathon since it will be big (10ish GB)
