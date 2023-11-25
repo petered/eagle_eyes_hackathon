@@ -9,6 +9,7 @@ setup(
         'opencv-python',  # assuming opencv-python is a dependency
         'artemis-ml @ git+https://github.com/petered/artemis.git@develop',
         # 'pandastable @ git+https://github.com/petered/pandastable.git',
-        'dataclass-serialization @ git+https://github.com/petered/python-dataclasses-serialization.git@add_setup'
+        'dataclass-serialization @ git+https://github.com/petered/python-dataclasses-serialization.git@add_setup',
+        'exif'
     ],
 )
