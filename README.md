@@ -102,7 +102,7 @@ We'll evaluate by using `YourModelLoader` to load your model and run it against 
 Put all your code in one big `submission.py` file, and copy the contents of that file into a colab notebook.
 Make sure the notebook runs and that your model succesfully loads.
 
-[Colab Notebook Submission Template](https://colab.research.google.com/drive/1FZOKhAr1mHrJ8wwh3E0OXMnGMOmubvvC?usp=sharing)
+[Colab Notebook Submission Template](https://colab.research.google.com/drive/17E-z2LcNmI3sCZ7v-OGOUmKKZaMAcjrE?usp=sharing)
 
 We will evaluate your code by copying your notebook and adding a cell like this:
 
