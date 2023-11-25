@@ -89,6 +89,12 @@ python hackathon/scripts/demo_view_dataset.py
 cd path/to/eagle_eyes_hackathon  # Change path to wherever you cloned it
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
+Or on windows: 
+
+```
+set PYTHONPATH=%CD%;%PYTHONPATH%
+```
+
 
 6) Submission  
 In the end you'll submit a colab notebook containing your submission.
