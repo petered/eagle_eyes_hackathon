@@ -9,11 +9,11 @@ from typing import Tuple, Optional, TypedDict, Dict, List, Iterator, Callable, S
 import cv2
 
 from artemis.general.custom_types import BGRImageArray
+from artemis.general.utils_for_testing import hold_tempdir
 from artemis.image_processing.image_builder import ImageBuilder
 from artemis.image_processing.image_utils import BoundingBox, BGRColors
 from dataclasses_serialization.json import JSONSerializer
-from eagle_eyes.demos.demo_profile_tflite_model import hold_tempdir
-from video_scanner.app_utils.utils import make_backup_file_copy
+from hackathon.data_utils.misc_data_utils import make_backup_file_copy
 
 DEFAULT_DATASET_FOLDER = os.path.expanduser(os.path.join('~', 'Downloads', 'eagle_eyes_hackathon_dataset'))
 
@@ -158,12 +158,9 @@ class AnnotatedImageDataLoader:
                 shutil.rmtree(root_folder, ignore_errors=True)
             shutil.move(tempdir, root_folder)
 
-
-
         # Now merge both /images subfolders
 
         return cls(root_folder=root_folder, case_dict=case_dict)
-
 
     @cached_property
     def index_to_case_and_item(self):
