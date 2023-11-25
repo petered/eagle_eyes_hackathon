@@ -66,11 +66,21 @@ pip install -r requirements.txt
 We will also have the dataset available on a thumb drive at the hackathon since it will be big (10ish GB)
 
 
+
+
 5) Get into it!
    1) Check out the submission templates in `hackathon/submissions`.  
    There you'll find a sample submission and 2 templates to get you started.
    2) Check out some scripts showing you how to compare and debug detectors  `hackathon/scripts`
 
+
+**Troubleshooting**
+- Can't import hackathon?  Try adding hackathon dir to your python path
+
+```
+cd path/to/eagle_eyes_hackathon
+export PYTHONPATH=$(pwd):$PYTHONPATH
+```
 
 6) Submission  
 In the end you'll submit a colab notebook containing your submission.
