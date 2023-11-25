@@ -69,6 +69,14 @@ We will also have the dataset available on a thumb drive at the hackathon since 
 
 
 5) Get into it!
+
+View the dataset with 
+```
+cd /path/to/eagle_eyes_hackathon.py
+python hackathon/scripts/demo_view_dataset.py
+```
+
+
    1) Check out the submission templates in `hackathon/submissions`.  
    There you'll find a sample submission and 2 templates to get you started.
    2) Check out some scripts showing you how to compare and debug detectors  `hackathon/scripts`
