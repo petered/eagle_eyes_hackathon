@@ -2,6 +2,7 @@ import dataclasses
 import json
 import os
 import shutil
+from collections import OrderedDict
 from dataclasses import dataclass
 from functools import cached_property
 from typing import Tuple, Optional, TypedDict, Dict, List, Iterator, Callable, Sequence
@@ -131,7 +132,9 @@ class AnnotatedImageDataLoader:
         else:
             json_data = {}
         cases = JSONSerializer.deserialize(Dict[str, Case], json_data)
-        return cls(root_folder=root_folder, case_dict=cases)
+        sorted_cases = OrderedDict(sorted(cases.items()))
+
+        return cls(root_folder=root_folder, case_dict=sorted_cases)
 
     @classmethod
     def from_merged_datasets(cls, root_folder: str, datasets: Sequence['AnnotatedImageDataLoader']) -> 'AnnotatedImageDataLoader':
